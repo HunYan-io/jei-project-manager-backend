@@ -28,6 +28,13 @@ router.post(
     controller.postProject
 );
 
-// router.delete("/:id", adminAuth, validate.params(/* validate id */), ...)
+router.delete(
+    "/:id",
+    adminAuth,
+    validate.params(
+        Joi.object({ id: Joi.number().integer().required() }).required()
+    ),
+    controller.deleteProject
+);
 
 module.exports = router;

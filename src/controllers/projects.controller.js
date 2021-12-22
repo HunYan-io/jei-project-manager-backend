@@ -43,3 +43,16 @@ exports.postProject = async (req, res, next) => {
         return next(err);
     }
 };
+
+exports.deleteProject = async (req, res, next) => {
+    try {
+        await Project.destroy({
+            where: {
+                id: req.params.id,
+            },
+        });
+        res.status(200).json({ success: true });
+    } catch (err) {
+        return next(err);
+    }
+};
