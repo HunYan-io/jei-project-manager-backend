@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const app = express();
 
+const projectsRoute = require("./routes/projects.route");
 const authRoute = require("./routes/auth.route");
 const exampleRoute = require("./routes/example.route");
 
@@ -22,6 +23,7 @@ if (process.env.NODE_ENV == "development") {
 
 app.use("/example", exampleRoute);
 app.use("/auth", authRoute);
+app.use("/projects", projectsRoute);
 
 app.use((req, res, next) => {
     next(new NotFoundError());
