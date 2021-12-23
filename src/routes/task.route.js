@@ -3,11 +3,13 @@ const Joi = require("joi");
 
 const validate = require("../middlewares/validate");
 const controller = require("../controllers/task.controller");
+const { auth, adminAuth } = require("../middlewares/auth");
 
 const router = express.Router();
 
 router.get(
     "/:id",
+    auth,
     validate.params(
         Joi.object({ id: Joi.number().integer().required() }).required()
     ),
@@ -16,6 +18,7 @@ router.get(
 
 router.delete(
     "/:id",
+    adminAuth,
     validate.params(
         Joi.object({ id: Joi.number().integer().required() }).required()
     ),
@@ -24,6 +27,7 @@ router.delete(
 
 router.put(
     "/:id",
+    auth,
     validate.params(
         Joi.object({ id: Joi.number().integer().required() }).required()
     ),

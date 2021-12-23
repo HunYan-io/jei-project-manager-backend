@@ -51,7 +51,7 @@ router.get(
 
 router.post(
     "/:projectId/tasks",
-    auth,
+    adminAuth,
     validate.params(
         Joi.object({ projectId: Joi.number().integer().required() }).required()
     ),
