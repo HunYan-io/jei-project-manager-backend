@@ -12,11 +12,11 @@ exports.create = (req, res) => {
     }
 
     const task = {
-        id: req.body.id,
         name: req.body.name,
         description: req.body.description,
         deadline: req.body.deadline,
         status: req.body.status,
+        projectId: req.params.projectId,
     };
 
     Task.create(task)
@@ -30,9 +30,13 @@ exports.create = (req, res) => {
         });
 };
 
-//get all tasks
+//get all tasks of a project
 exports.findAll = (req, res) => {
-    Task.findAll()
+    Task.findAll({
+        where: {
+            projectId: req.params.projectId,
+        },
+    })
         .then((data) => {
             res.send(data);
         })

@@ -1,5 +1,6 @@
 const sequelize = require("../utils/database");
 const Sequelize = require("sequelize");
+const Project = require("./project.model");
 
 const Task = sequelize.define("task", {
     id: {
@@ -20,5 +21,8 @@ const Task = sequelize.define("task", {
         type: Sequelize.ENUM("to do", "doing", "done"),
     },
 });
+
+Project.hasMany(Task);
+Task.belongsTo(Project);
 
 module.exports = Task;

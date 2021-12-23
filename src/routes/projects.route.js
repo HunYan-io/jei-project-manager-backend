@@ -3,6 +3,7 @@ const Joi = require("joi");
 
 const validate = require("../middlewares/validate");
 const controller = require("../controllers/projects.controller");
+const taskController = require("../controllers/task.controller");
 const { auth, adminAuth } = require("../middlewares/auth");
 
 const router = express.Router();
@@ -35,6 +36,24 @@ router.delete(
         Joi.object({ id: Joi.number().integer().required() }).required()
     ),
     controller.deleteProject
+);
+
+router.get(
+    "/:projectId/tasks",
+    auth,
+    validate.params(
+        Joi.object({ projectId: Joi.number().integer().required() }).required()
+    ),
+    taskController.findAll
+);
+
+router.post(
+    "/:projectId/tasks",
+    auth,
+    validate.params(
+        Joi.object({ projectId: Joi.number().integer().required() }).required()
+    ),
+    taskController.create
 );
 
 module.exports = router;
