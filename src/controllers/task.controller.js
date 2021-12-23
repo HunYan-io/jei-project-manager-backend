@@ -4,13 +4,6 @@ const Task = require("../models/task.model");
 
 //create a task
 exports.create = (req, res) => {
-    if (!req.body.name && !req.body.deadline) {
-        res.status(400).send({
-            message: "Missing content",
-        });
-        return;
-    }
-
     const task = {
         name: req.body.name,
         description: req.body.description,
@@ -98,9 +91,12 @@ exports.delete = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    Task.update(req.body, {
-        where: { id: id },
-    })
+    Task.update(
+        { status: req.body.status },
+        {
+            where: { id: id },
+        }
+    )
         .then((num) => {
             if (num == 1) {
                 res.send({
