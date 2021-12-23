@@ -1,9 +1,8 @@
-const req = require("express/lib/request");
-const res = require("express/lib/response");
 const Task = require("../models/task.model");
+const { NotFoundError } = require("../utils/errors");
 
 //create a task
-exports.create = (req, res) => {
+exports.create = (req, res, next) => {
     const task = {
         name: req.body.name,
         description: req.body.description,
@@ -14,50 +13,42 @@ exports.create = (req, res) => {
 
     Task.create(task)
         .then((data) => {
-            res.send(data);
+            res.status(200).json(data);
         })
         .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Error creating task",
-            });
+            next(err);
         });
 };
 
 //get all tasks of a project
-exports.findAll = (req, res) => {
+exports.findAll = (req, res, next) => {
     Task.findAll({
         where: {
             projectId: req.params.projectId,
         },
     })
         .then((data) => {
-            res.send(data);
+            res.status(200).json(data);
         })
         .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Error occured",
-            });
+            next(err);
         });
 };
 
 //get a task by id
-exports.findOne = (req, res) => {
+exports.findOne = (req, res, next) => {
     const id = req.params.id;
 
     Task.findByPk(id)
         .then((data) => {
             if (data) {
-                res.send(data);
+                res.status(200).json(data);
             } else {
-                res.status(404).send({
-                    message: `Cannot find task with id=${id}`,
-                });
+                next(new NotFoundError());
             }
         })
         .catch((err) => {
-            res.status(500).send({
-                message: err.message || "Error retrieving task",
-            });
+            next(err);
         });
 };
 
@@ -70,19 +61,15 @@ exports.delete = (req, res) => {
     })
         .then((num) => {
             if (num == 1) {
-                res.send({
-                    message: "Task was deleted successfully!",
+                res.status(200).send({
+                    success: true,
                 });
             } else {
-                res.send({
-                    message: `Cannot delete Task with id=${id}. Maybe Task was not found!`,
-                });
+                next(new NotFoundError());
             }
         })
         .catch((err) => {
-            res.status(500).send({
-                message: "Could not delete task with id=" + id,
-            });
+            next(err);
         });
 };
 
@@ -99,18 +86,14 @@ exports.update = (req, res) => {
     )
         .then((num) => {
             if (num == 1) {
-                res.send({
-                    message: "Task was updated successfully.",
+                res.status(200).json({
+                    success: true,
                 });
             } else {
-                res.send({
-                    message: `Cannot update Task with id=${id}. Maybe Task was not found or req.body is empty!`,
-                });
+                next(new NotFoundError());
             }
         })
         .catch((err) => {
-            res.status(500).send({
-                message: "Error updating Task with id=" + id,
-            });
+            next(err);
         });
 };
