@@ -5,8 +5,14 @@ const helmet = require("helmet");
 const cors = require("cors");
 const app = express();
 
+const taskRoute = require("./routes/task.route");
+const projectsRoute = require("./routes/projects.route");
+const authRoute = require("./routes/auth.route");
 const exampleRoute = require("./routes/example.route");
-const { HttpError, NotFoundError } = require("./utils/errors");
+
+const errorMiddleware = require("./middlewares/error");
+
+const { NotFoundError } = require("./utils/errors");
 const sequelize = require("./utils/database");
 
 app.use(helmet());
@@ -17,23 +23,15 @@ if (process.env.NODE_ENV == "development") {
 }
 
 app.use("/example", exampleRoute);
+app.use("/auth", authRoute);
+app.use("/projects", projectsRoute);
+app.use("/task", taskRoute);
 
 app.use((req, res, next) => {
     next(new NotFoundError());
 });
 
-app.use((err, req, res, next) => {
-    console.error(err);
-    if (err instanceof HttpError) {
-        res.status(err.statusCode).json({
-            error: err.httpMessage,
-        });
-    } else {
-        res.status(500).json({
-            error: "Internal Server Error",
-        });
-    }
-});
+app.use(errorMiddleware);
 
 sequelize
     .sync()

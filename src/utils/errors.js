@@ -1,7 +1,13 @@
 class HttpError extends Error {
-    // abstract class
     statusCode = null;
     httpMessage = null;
+    userMessage = null;
+    constructor({ statusCode, httpMessage, userMessage } = {}) {
+        super();
+        if (statusCode) this.statusCode = statusCode;
+        if (httpMessage) this.httpMessage = httpMessage;
+        if (userMessage) this.userMessage = userMessage;
+    }
 }
 
 class NotFoundError extends HttpError {
@@ -24,10 +30,22 @@ class InternalServerError extends HttpError {
     httpMessage = "Internal Server Error";
 }
 
+class ForbiddenError extends HttpError {
+    statusCode = 403;
+    httpMessage = "Forbidden";
+}
+
+class ConflictError extends HttpError {
+    statusCode = 409;
+    httpMessage = "Conflict";
+}
+
 module.exports = {
     HttpError,
     NotFoundError,
     MalformedRequestError,
     UnauthorizedError,
     InternalServerError,
+    ForbiddenError,
+    ConflictError,
 };
